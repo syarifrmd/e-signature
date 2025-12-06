@@ -8,7 +8,10 @@ export default function AppLogo() {
             </div>
             <div className="ml-1 grid flex-1 text-left text-sm">
                 <span className="mb-0.5 truncate leading-tight font-semibold">
-                    Laravel Starter Kit
+                    E-Signature
+                </span>
+                <span className="text-xs text-gray-600 dark:text-gray-400">
+                    Digital Document Signing
                 </span>
             </div>
         </>

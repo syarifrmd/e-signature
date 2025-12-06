@@ -23,12 +23,12 @@ const mainNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: 'Create Signature',
+        title: 'E-Sign Documents',
         href: '/signatures/create',
         icon: PenTool,
     },
     {
-        title: 'Verify Signature',
+        title: 'Verify',
         href: '/verify',
         icon: CheckCircle,
     },
@@ -39,18 +39,7 @@ const mainNavItems: NavItem[] = [
     },
 ];
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
+const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
     return (

@@ -13,7 +13,21 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        $signatureCount = \App\Models\DocumentSignature::count();
+        $certificateCount = \App\Models\Certificate::count();
+        $recentSignatures = \App\Models\DocumentSignature::latest()->take(5)->get(["id","file_name","created_at"]);
+        $recentCertificates = \App\Models\Certificate::latest()->take(5)->get(["id","recipient_name","certificate_number","created_at"]);
+
+        return Inertia::render('dashboard', [
+            'summary' => [
+                'signatures' => $signatureCount,
+                'certificates' => $certificateCount,
+            ],
+            'recent' => [
+                'signatures' => $recentSignatures,
+                'certificates' => $recentCertificates,
+            ],
+        ]);
     })->name('dashboard');
 
     Route::get('signatures/create', [SignatureController::class, 'index'])->name('signatures.create');
