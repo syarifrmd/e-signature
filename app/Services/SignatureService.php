@@ -34,8 +34,8 @@ class SignatureService
                 $commonPaths = [
                     'C:/xampp/php/extras/ssl/openssl.cnf',
                     'D:/xampp/php/extras/ssl/openssl.cnf',
-                    'C:/laragon/bin/php/php-8.2.10-Win32-vs16-x64/extras/ssl/openssl.cnf', // Adjust version if needed
-                    dirname(php_ini_loaded_file()) . '/extras/ssl/openssl.cnf', // Relative to php.ini
+                    'C:/laragon/bin/php/php-8.2.10-Win32-vs16-x64/extras/ssl/openssl.cnf', 
+                    dirname(php_ini_loaded_file()) . '/extras/ssl/openssl.cnf', 
                 ];
 
                 foreach ($commonPaths as $path) {
@@ -155,49 +155,6 @@ class SignatureService
         // Use a temporary file for the QR image
         $qrTempFile = tempnam(sys_get_temp_dir(), 'qr_') . '.png';
         
-        // We need to generate a PNG. BaconQrCode supports this if Imagick or GD is available.
-        // Since we might not have Imagick, let's try to use a simple approach or check if we can use SvgImageBackEnd and convert?
-        // FPDF doesn't support SVG natively well.
-        // Let's try to use the GD backend if available, or fallback to a simple QR generator if needed.
-        // For now, let's assume we can use a simple QR generation via a public API or a library that supports PNG.
-        // Actually, BaconQrCode has Png backend but it might need Imagick.
-        // Let's try to use `endroid/qr-code` which is very popular and supports GD, but we have `bacon/bacon-qr-code`.
-        // BaconQrCode 2.0+ focuses on different backends.
-        
-        // Let's try to use a simple workaround: Generate SVG and convert to PNG? No, that requires Imagick.
-        // Let's use a pure PHP QR code generator that outputs PNG if Bacon is hard to configure for PNG without Imagick.
-        // But wait, BaconQrCode DOES support GD.
-        
-        // Let's try to construct a renderer that uses GD.
-        // If that fails, we might need to install `endroid/qr-code`.
-        // For now, let's try to use a simple approach:
-        // We will use the `BaconQrCode\Renderer\Image\PngImageBackEnd` if it exists, or `ImagickImageBackEnd`.
-        // If not, we will use a placeholder or try to install `endroid/qr-code`.
-        
-        // Let's check if we can use `endroid/qr-code` which is easier for PNG.
-        // But I don't want to install more packages if I can avoid it.
-        // Let's use a simple trick: use `phpqrcode` library? No.
-        
-        // Let's try to use the SVG and rasterize it? No.
-        
-        // Let's assume we can use `BaconQrCode` with `ImagickImageBackEnd` if available.
-        // If not, we will skip embedding for now or use a text watermark.
-        
-        // Actually, let's just use `endroid/qr-code` is much better for this.
-        // But since I cannot easily check extensions, I will try to use a public QR API for the image generation to be safe and robust in this environment?
-        // No, that's bad for privacy.
-        
-        // Let's use `simplesoftwareio/simple-qrcode` which wraps BaconQrCode and makes it easy in Laravel?
-        // It is not installed.
-        
-        // Let's try to use the existing `BaconQrCode` to generate a string and save it.
-        // If `Imagick` is missing, `BaconQrCode` might fail for PNG.
-        // Let's check if `BaconQrCode\Renderer\Image\Png` exists.
-        // It seems BaconQrCode 2.x removed direct PNG support without Imagick.
-        
-        // ALTERNATIVE: Use FPDF to draw the QR code using rectangles!
-        // This is the most robust way. We can parse the QR matrix and draw it in PDF.
-        // We can use `BaconQrCode\Encoder\Encoder` to get the matrix.
         
         $encoder = new \BaconQrCode\Encoder\Encoder();
         // We need to encode the data.
@@ -208,13 +165,6 @@ class SignatureService
                 new SvgImageBackEnd() // We use SVG backend just to get the writer, but we want the matrix.
             )
         );
-        // Wait, Writer doesn't expose matrix easily.
-        
-        // Let's use a simpler approach:
-        // We will use a library that generates QR for FPDF. `chillerlan/php-qrcode`?
-        // Or just use a public API for now to demonstrate, as it is a student project?
-        // "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" . urlencode($qrData)
-        // This is the most reliable way without worrying about GD/Imagick versions on the host.
         
         // Use QRCode Monkey API with logo upload
         $logoPath = public_path('storage/logo/logo.png');
@@ -386,10 +336,7 @@ class SignatureService
         ]);
     }
 
-    /**
-     * Overlay a centered logo onto a QR PNG using GD.
-     * If no path is provided, attempts `storage/app/public/logo/logo.png`.
-     */
+
     protected function overlayLogoOnQr(string $qrPngPath, ?string $logoPath = null): void
     {
         try {
@@ -519,9 +466,7 @@ class SignatureService
             return ['valid' => false, 'reason' => 'Invalid JSON'];
         }
 
-        // Reconstruct data to verify
-        // version|doc_hash|signer_id|signed_at_iso|alg
-        // Note: keys in JSON are shortened to save space: v, h, uid, ts, alg
+
         $version = $data['v'] ?? 'v1';
         $docHash = $data['h'] ?? '';
         $signerId = $data['uid'] ?? '';
